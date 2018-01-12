@@ -1,0 +1,70 @@
+import numpy as np
+from os import listdir
+from os.path import isfile, join
+import cv2
+import pickle
+global done_flag,init_pt,final_pt
+
+done_flag = 0 
+def draw_rect(event,x,y,flags,param):
+	global done_flag,init_pt,final_pt
+	if event == cv2.EVENT_LBUTTONDOWN:
+		init_pt = (x,y)
+		# print x,y
+
+	if event == cv2.EVENT_LBUTTONUP:
+		final_pt = (x,y)
+		done_flag = 1
+
+def draw_grid(img):
+	for i in range(0,img.shape[1],20):
+		cv2.line(img, (0, i), (img.shape[1], i), (0, 0, 0), 1, 1)
+	for i in range(0,img.shape[1],20):
+		cv2.line(img, (i, 0), (i, img.shape[0]), (0, 0, 0), 1, 1)
+	return img
+
+print "Welcome to KTW's object annotator!"
+print "1 - Blue racecar(class 0)\n2 - Black car(class 1)\n3 - Orange Truck(class 2)\n4 - Heatsink(class 3)\n"
+print "Press space to save bounding boxes, R to redo, Esc to exit. "
+
+path = './image_data/'
+image_list= [f for f in listdir(path) if isfile(join(path, f))]
+
+cv2.namedWindow('Image')
+cv2.setMouseCallback('Image',draw_rect)
+count = 0
+rect_list =  [(None,None),(None,None),(None,None),(None,None)]
+rect_class = 0 
+colours = [[255,0,0],[0,255,0],[0,0,255],[255,0,255]]
+
+while(1):
+	img = cv2.imread(path + image_list[count])
+	img = draw_grid(img)
+	if(done_flag == 1):
+		rect_list[rect_class] = ((init_pt,final_pt))
+		done_flag = 0
+	for i,x in enumerate(rect_list):
+		cv2.rectangle(img, x[0], x[1], color=colours[i], thickness=5, lineType=8, shift=0)
+	cv2.imshow('Image',img)
+	key = cv2.waitKey(5) & 0xFF
+	if key == 49:
+		rect_class = 0
+	if key == 50:
+		rect_class = 1
+	if key == 51:
+		rect_class = 2
+	if key == 52:
+		rect_class = 3
+	if key == 114:
+		rect_list =  [(None,None),(None,None),(None,None),(None,None)]
+		rect_class = 0 
+		continue
+	if key == 32:
+		pickle.dump(rect_list,open('./labels/'+image_list[count].split('.')[0] + ".p","wb"),protocol=2)
+		count+=1
+		rect_list =  [(None,None),(None,None),(None,None),(None,None)]
+		rect_class = 0 
+		continue
+	if key == 27:
+		break
+cv2.destroyAllWindows() 
