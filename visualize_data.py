@@ -12,6 +12,7 @@ img_path = './image_data/'
 colours = [[255,0,0],[0,255,0],[0,0,255],[255,0,255]]
 
 for i,x in enumerate(list):
+	print x
 	img = cv2.imread(img_path + x.split('.')[0]+'.jpg')
 	rect_list = pickle.load(open(path + x,'rb'))
 	for i,rec in enumerate(rect_list):
