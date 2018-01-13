@@ -27,7 +27,7 @@ print "Welcome to KTW's object annotator!"
 print "1 - Blue racecar(class 0)\n2 - Black car(class 1)\n3 - Orange Truck(class 2)\n4 - Heatsink(class 3)\n"
 print "Press space to save bounding boxes, R to redo, Esc to exit. "
 
-labels_path = './labels/'
+labels_path = './bbox_coordinates/'
 labels_list = [f.split('.')[0] for f in listdir(labels_path) if isfile(join(labels_path, f))]
 
 
@@ -40,7 +40,7 @@ cv2.setMouseCallback('Image',draw_rect)
 count = 0
 rect_list =  [(None,None),(None,None),(None,None),(None,None)]
 rect_class = 0 
-colours = [[255,0,0],[0,255,0],[0,0,255],[255,0,255]]
+colours = [[255,0,0],[0,0,0],[0,165,255],[192,192,192]]
 print "You have " + str(len(image_list)) +" images to go. All the best. :)"
 print image_list[count]
 words = ["Insane","Awesome","Wow","Oh wow","You are a superstar"]
