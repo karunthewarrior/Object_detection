@@ -70,7 +70,7 @@ while(1):
 		rect_class = 0 
 		continue
 	if key == 32:
-		pickle.dump(rect_list,open('./labels/'+image_list[count].split('.')[0] + ".p","wb"),protocol=2)
+		pickle.dump(rect_list,open('./bbox_coordinates/'+image_list[count].split('.')[0] + ".p","wb"),protocol=2)
 		count+=1
 		if count%5 == 0:
 			print words[random.randint(0,len(words))-1] +"! Only " + str(len(image_list)-count+1) + " left!"
