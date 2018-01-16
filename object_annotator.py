@@ -3,8 +3,11 @@ from os import listdir
 from os.path import isfile, join
 import cv2
 import pickle
-global done_flag,init_pt,final_pt
 import random
+
+
+global done_flag,init_pt,final_pt
+
 done_flag = 0 
 def draw_rect(event,x,y,flags,param):
 	global done_flag,init_pt,final_pt

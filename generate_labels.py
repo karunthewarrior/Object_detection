@@ -14,8 +14,9 @@ def disp(event,x,y,flags,param):
 		print g_x,g_y
 
 def locate_grid(x,y):
-	grid_x = int(x/32)
-	grid_y = int(y/24)
+	grid_x = int(x/20)
+	grid_y = int(y/20)
+	print "Grid:",grid_x,grid_y
 	return grid_x,grid_y
 
 def box_convert_center(pt_box):
@@ -39,26 +40,27 @@ def box_convert_pt(center_box):
 
 def create_label_array(rect_list,img):
 	colours = [[255,0,0],[0,0,0],[0,165,255],[192,192,192]]
-	label = np.zeros((20,20,6))
+	label = np.zeros((32,24,6))
 	for i,rec in enumerate(rect_list):
 		center_box = box_convert_center(rec)
 		if(rec[0] !=None):
 			bx,by = locate_grid(center_box[0],center_box[1])
 			label[bx,by,0] = 1
-			label[bx,by,1] = (center_box[0]%32)/32
-			label[bx,by,2] = (center_box[1]%24)/24
-			label[bx,by,3] = center_box[2]/32
-			label[bx,by,4] = center_box[3]/24
+			label[bx,by,1] = (center_box[0]%20)/20
+			label[bx,by,2] = (center_box[1]%20)/20
+			label[bx,by,3] = center_box[2]/20
+			label[bx,by,4] = center_box[3]/20
 			label[bx,by,5] = i
+			# print label[bx,by,:]
 			# pt_box = box_convert_label(label[bx,by,:],bx,by)
 			# cv2.rectangle(img, pt_box[0], pt_box[1], color=[255,255,255], thickness=5, lineType=8, shift=0)
 	return label
 
 def box_convert_label(label,bx,by):
-	c_x = label[1]*32+32*bx
-	c_y = label[2]*32+24*by
-	w = label[3]*32
-	h = label[4]*24
+	c_x = label[1]*20+20*bx
+	c_y = label[2]*20+20*by
+	w = label[3]*20
+	h = label[4]*20
 	pt_box = box_convert_pt((c_x,c_y,w,h))
 	return pt_box
 
@@ -76,10 +78,10 @@ for count,x in enumerate(list):
 	height,width,_ = img.shape
 	
 	#Drawing the grids for visualization
-	for i in range(int(width/32)):
-		cv2.line(img, (i*int(width/20),0), (i*int(width/20),height), (0, 0, 0), 1, 1)
-	for i in range(int(height/24)):
-		cv2.line(img, (0,i*int(height/20)), (width,i*int(height/20)), (0, 0, 0), 1, 1)
+	for i in range(int(width/20)):
+		cv2.line(img, (i*int(width/32),0), (i*int(width/32),height), (0, 0, 0), 1, 1)
+	for i in range(int(height/20)):
+		cv2.line(img, (0,i*int(height/24)), (width,i*int(height/24)), (0, 0, 0), 1, 1)
 	
 	rect_list = pickle.load(open(path + x,'rb'))
 
@@ -89,7 +91,7 @@ for count,x in enumerate(list):
 	label = create_label_array(rect_list,img)
 	pickle.dump(label,open('./labels/'+list[count].split('.')[0] + ".p","wb"),protocol=2)
 	cv2.imshow('Image',img)
-	key = cv2.waitKey(5) & 0xFF
+	key = cv2.waitKey(1) & 0xFF
 	if key == 27:
 		break
 cv2.destroyAllWindows() 
