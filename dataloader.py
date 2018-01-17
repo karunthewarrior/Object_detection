@@ -28,7 +28,6 @@ class MyDataset(Dataset):
         shape = image.shape
         sample = image
         sample = cv2.cvtColor(sample,cv2.COLOR_BGR2RGB)
-        sample = sample.transpose(2,1,0)
         
         label = pickle.load(open(self.labels_path + self.image_list[idx].split('.')[0] + '.p','rb'))
         label = label.transpose(2,1,0)
