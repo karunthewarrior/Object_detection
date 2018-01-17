@@ -31,7 +31,7 @@ class MyDataset(Dataset):
         
         label = pickle.load(open(self.labels_path + self.image_list[idx].split('.')[0] + '.p','rb'))
         label = label.transpose(2,1,0)
-
+        label = torch.from_numpy(label)
         if self.transform:
             sample = self.transform(sample)
         
