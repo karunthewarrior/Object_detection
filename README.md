@@ -1,2 +1,2 @@
 # Object_detection
-The object detection system is built using ideas from YOLO and Overfeat. A convolutional neural network is implemented using PyTorch. (Work in progress). 
+Experimenting with various ideas to build a fast object detection system with as few layers as possible. 
