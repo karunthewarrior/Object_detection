@@ -5,7 +5,7 @@ from os.path import isfile, join
 import cv2
 import pickle
 import math
-
+import pandas as pd
 
 def disp(event,x,y,flags,param):
 	if event == cv2.EVENT_LBUTTONDOWN:
@@ -56,6 +56,16 @@ def create_label_array(rect_list,img):
 			# cv2.rectangle(img, pt_box[0], pt_box[1], color=[255,255,255], thickness=5, lineType=8, shift=0)
 	return label
 
+def generate_class_labels(rect_list,img):
+	class_list = []
+	class_list.append(img.split('.')[0]+'.jpg')
+	for i,rec in enumerate(rect_list):
+		if rec[0]==None:
+			class_list.append(0)
+		else:
+			class_list.append(1)
+	return class_list
+
 def box_convert_label(label,bx,by):
 	c_x = label[1]*20+20*bx
 	c_y = label[2]*20+20*by
@@ -73,6 +83,7 @@ cv2.namedWindow('Image')
 cv2.setMouseCallback('Image',disp)
 colours = [[255,0,0],[0,0,0],[0,165,255],[192,192,192]]
 
+class_labels = []
 for count,x in enumerate(list):
 	img = cv2.imread(img_path + x.split('.')[0]+'.jpg')
 	height,width,_ = img.shape
@@ -84,7 +95,8 @@ for count,x in enumerate(list):
 		cv2.line(img, (0,i*int(height/24)), (width,i*int(height/24)), (0, 0, 0), 1, 1)
 	
 	rect_list = pickle.load(open(path + x,'rb'))
-
+	class_list = generate_class_labels(rect_list,x)
+	class_labels.append(class_list)
 	# for i,x in enumerate(rect_list):
 	# 	cv2.rectangle(img, x[0], x[1], color=colours[i], thickness=3, lineType=8, shift=0)
 
@@ -92,6 +104,8 @@ for count,x in enumerate(list):
 	pickle.dump(label,open('./labels/'+list[count].split('.')[0] + ".p","wb"),protocol=2)
 	cv2.imshow('Image',img)
 	key = cv2.waitKey(1) & 0xFF
-	if key == 27:
-		break
+labels_df = pd.DataFrame(class_labels,index=None)
+labels_df.columns = ["image_name","class1","class2","class3","class4"]
+labels_df.to_csv("./classification_labels/class_labels.csv",index=False) 
+
 cv2.destroyAllWindows() 
